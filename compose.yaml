@@ -1,11 +1,35 @@
 name: distributedmidterm
 services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: distributed_storage
+      POSTGRES_USER: storage
+      POSTGRES_PASSWORD: storagepass
+    ports:
+      - "127.0.0.1:15433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U storage -d distributed_storage"]
+      interval: 5s
+      timeout: 3s
+      retries: 15
+    restart: unless-stopped
+
   metadata:
     build:
       context: .
       dockerfile: metadata_service/Dockerfile
+    environment:
+      DATABASE_URL: postgresql://storage:storagepass@db:5432/distributed_storage
+      WORKER_TOKEN: local-development-worker-token
+      STORAGE_NODES: node-1,node-2,node-3,node-4,node-5,node-6
     ports:
       - "127.0.0.1:18100:8000"
+    depends_on:
+      db:
+        condition: service_healthy
     restart: unless-stopped
 
   node1: &storage_node
@@ -61,8 +85,65 @@ services:
     ports:
       - "127.0.0.1:18004:8000"
 
+  node5:
+    <<: *storage_node
+    environment:
+      NODE_ID: node-5
+      STORAGE_DIR: /data
+      METADATA_URL: http://metadata:8000
+      HEARTBEAT_INTERVAL: "5"
+    volumes:
+      - node5_data:/data
+    ports:
+      - "127.0.0.1:18005:8000"
+
+  node6:
+    <<: *storage_node
+    environment:
+      NODE_ID: node-6
+      STORAGE_DIR: /data
+      METADATA_URL: http://metadata:8000
+      HEARTBEAT_INTERVAL: "5"
+    volumes:
+      - node6_data:/data
+    ports:
+      - "127.0.0.1:18006:8000"
+
+  repair-worker:
+    build:
+      context: .
+      dockerfile: repair_worker/Dockerfile
+    environment:
+      METADATA_URL: http://metadata:8000
+      WORKER_TOKEN: local-development-worker-token
+      REPAIR_INTERVAL: "10"
+    depends_on:
+      - metadata
+    restart: unless-stopped
+
+  gateway:
+    build:
+      context: .
+      dockerfile: gateway/Dockerfile
+    environment:
+      METADATA_URL: http://metadata:8000
+      DATABASE_URL: postgresql://storage:storagepass@db:5432/distributed_storage
+      GATEWAY_API_KEY: ${GATEWAY_API_KEY:-change-me-local-api-key}
+      RATE_LIMIT_PER_MINUTE: ${RATE_LIMIT_PER_MINUTE:-120}
+    ports:
+      - "127.0.0.1:18200:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+      metadata:
+        condition: service_started
+    restart: unless-stopped
+
 volumes:
+  postgres_data:
   node1_data:
   node2_data:
   node3_data:
   node4_data:
+  node5_data:
+  node6_data:

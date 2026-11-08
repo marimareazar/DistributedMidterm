@@ -1,0 +1,232 @@
+{
+  "info": {
+    "name": "DistributedMidterm Task 5 Gateway",
+    "description": "Set baseUrl http://localhost:18200 and apiKey to value in your .env",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "apikey",
+    "apikey": [
+      {
+        "key": "key",
+        "value": "X-API-Key",
+        "type": "string"
+      },
+      {
+        "key": "value",
+        "value": "{{apiKey}}",
+        "type": "string"
+      },
+      {
+        "key": "in",
+        "value": "header",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:18200"
+    },
+    {
+      "key": "apiKey",
+      "value": "change-me-local-api-key"
+    }
+  ],
+  "item": [
+    {
+      "name": "List buckets",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/buckets",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "buckets"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Create replication bucket",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/buckets",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "buckets"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\"name\":\"postman-demo\",\"protection\":\"replication\",\"replicas\":3}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "List objects",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/buckets/postman-demo/objects",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "buckets",
+            "postman-demo",
+            "objects"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Object metadata",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/buckets/postman-demo/objects/example/test.txt/metadata",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "buckets",
+            "postman-demo",
+            "objects",
+            "example",
+            "test.txt",
+            "metadata"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Download object",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/buckets/postman-demo/objects/example/test.txt/download",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "buckets",
+            "postman-demo",
+            "objects",
+            "example",
+            "test.txt",
+            "download"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Download range",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Range",
+            "value": "bytes=0-19"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/buckets/postman-demo/objects/example/test.txt/download",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "buckets",
+            "postman-demo",
+            "objects",
+            "example",
+            "test.txt",
+            "download"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Search by tag",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/search?bucket=postman-demo&tag_key=topic&tag_value=midterm",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "search?bucket=postman-demo&tag_key=topic&tag_value=midterm"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Cluster status",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/cluster",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "cluster"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Delete object",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/buckets/postman-demo/objects/example/test.txt",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "buckets",
+            "postman-demo",
+            "objects",
+            "example",
+            "test.txt"
+          ]
+        }
+      }
+    }
+  ]
+}

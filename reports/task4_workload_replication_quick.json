@@ -1,0 +1,20 @@
+{
+  "kind": "real_HTTP_upload_benchmark",
+  "quick": true,
+  "protection": "replication",
+  "bucket": "bench-d7e5b24690a4",
+  "small": {
+    "objects": 20,
+    "bytes_uploaded": 485848,
+    "seconds": 0.885,
+    "throughput_MiB_per_s": 0.523,
+    "new_unique_chunks": 20
+  },
+  "large": {
+    "objects": 1,
+    "bytes_uploaded": 4194304,
+    "seconds": 0.118,
+    "throughput_MiB_per_s": 33.768,
+    "new_unique_chunks": 1
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "samples": 10000,
+  "virtual_nodes_per_node": 128,
+  "original_distribution": {
+    "node-1": 2283,
+    "node-2": 2663,
+    "node-3": 2065,
+    "node-4": 2989
+  },
+  "after_add_distribution": {
+    "node-1": 1825,
+    "node-2": 2120,
+    "node-3": 1744,
+    "node-4": 2428,
+    "node-5": 1883
+  },
+  "adding_node_5": {
+    "moved_chunks": 1883,
+    "moved_percent": 18.83
+  },
+  "removing_node_4": {
+    "moved_chunks": 2989,
+    "moved_percent": 29.89
+  },
+  "note": "This is a placement simulation; physically migrating data is not part of Task 3."
+}

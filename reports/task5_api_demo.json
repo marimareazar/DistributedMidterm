@@ -1,0 +1,23 @@
+{
+  "unauthenticated_status": 401,
+  "bucket_create": 201,
+  "upload": {
+    "bucket": "dem83ba3c12cb12",
+    "key": "folder/test.txt",
+    "version": 1,
+    "protection": "replication",
+    "replicas": 3,
+    "size": 50000,
+    "chunks": 1,
+    "new_unique_chunks": 1,
+    "tags": {
+      "topic": "midterm"
+    }
+  },
+  "full_download_sha256_match": true,
+  "range_status": 206,
+  "range_verified": true,
+  "search_results": 1,
+  "healthy_nodes": 6,
+  "delete_status": 200
+}

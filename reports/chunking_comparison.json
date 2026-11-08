@@ -1,0 +1,24 @@
+[
+  {
+    "method": "fixed",
+    "original_chunks": 5,
+    "edited_chunks": 5,
+    "original_bytes": 18874368,
+    "edited_bytes": 18890752,
+    "reusable_unique_chunks": 2,
+    "edited_unique_chunks": 5,
+    "reuse_percent": 40.0,
+    "reconstruction_verified": true
+  },
+  {
+    "method": "fastcdc",
+    "original_chunks": 5,
+    "edited_chunks": 5,
+    "original_bytes": 18874368,
+    "edited_bytes": 18890752,
+    "reusable_unique_chunks": 4,
+    "edited_unique_chunks": 5,
+    "reuse_percent": 80.0,
+    "reconstruction_verified": true
+  }
+]

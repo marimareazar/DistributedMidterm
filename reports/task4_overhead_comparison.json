@@ -1,0 +1,33 @@
+{
+  "type": "analytical_estimates_not_measured_network_traffic",
+  "small_5000_files_1_to_50_KiB": {
+    "objects": 5000,
+    "logical_bytes": 129582627,
+    "chunks": 5000,
+    "replication_3": {
+      "stored_bytes": 388747881,
+      "storage_ratio": 3.0,
+      "repair_one_missing_shard_total_read_write_bytes": 259165254
+    },
+    "erasure_4_2": {
+      "stored_bytes": 194385222,
+      "storage_ratio": 1.50009,
+      "repair_one_missing_shard_total_read_write_bytes": 161987685
+    }
+  },
+  "large_10_files_100_MiB_each": {
+    "objects": 10,
+    "logical_bytes": 1048576000,
+    "chunks": 250,
+    "replication_3": {
+      "stored_bytes": 3145728000,
+      "storage_ratio": 3.0,
+      "repair_one_missing_shard_total_read_write_bytes": 2097152000
+    },
+    "erasure_4_2": {
+      "stored_bytes": 1572864000,
+      "storage_ratio": 1.5,
+      "repair_one_missing_shard_total_read_write_bytes": 1310720000
+    }
+  }
+}

@@ -1,9 +1,9 @@
 .venv
 .git
-__pycache__
-.pytest_cache
 .idea
-node_modules
-data
-reports
+__pycache__
 *.pyc
+.pytest_cache
+reports
+data
+frontend/node_modules
