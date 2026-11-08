@@ -1,0 +1,68 @@
+name: distributedmidterm
+services:
+  metadata:
+    build:
+      context: .
+      dockerfile: metadata_service/Dockerfile
+    ports:
+      - "127.0.0.1:18100:8000"
+    restart: unless-stopped
+
+  node1: &storage_node
+    build:
+      context: .
+      dockerfile: storage_node/Dockerfile
+    environment:
+      NODE_ID: node-1
+      STORAGE_DIR: /data
+      METADATA_URL: http://metadata:8000
+      HEARTBEAT_INTERVAL: "5"
+    volumes:
+      - node1_data:/data
+    ports:
+      - "127.0.0.1:18001:8000"
+    depends_on:
+      - metadata
+    restart: unless-stopped
+
+  node2:
+    <<: *storage_node
+    environment:
+      NODE_ID: node-2
+      STORAGE_DIR: /data
+      METADATA_URL: http://metadata:8000
+      HEARTBEAT_INTERVAL: "5"
+    volumes:
+      - node2_data:/data
+    ports:
+      - "127.0.0.1:18002:8000"
+
+  node3:
+    <<: *storage_node
+    environment:
+      NODE_ID: node-3
+      STORAGE_DIR: /data
+      METADATA_URL: http://metadata:8000
+      HEARTBEAT_INTERVAL: "5"
+    volumes:
+      - node3_data:/data
+    ports:
+      - "127.0.0.1:18003:8000"
+
+  node4:
+    <<: *storage_node
+    environment:
+      NODE_ID: node-4
+      STORAGE_DIR: /data
+      METADATA_URL: http://metadata:8000
+      HEARTBEAT_INTERVAL: "5"
+    volumes:
+      - node4_data:/data
+    ports:
+      - "127.0.0.1:18004:8000"
+
+volumes:
+  node1_data:
+  node2_data:
+  node3_data:
+  node4_data:
