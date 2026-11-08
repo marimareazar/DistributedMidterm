@@ -316,3 +316,7 @@ def cluster_status():
 
 
 app.include_router(router)
+
+# Task 6: Elasticsearch-backed API. Keep existing Task 5 routes intact.
+from gateway.search_es import router as search_es_router
+app.include_router(search_es_router)

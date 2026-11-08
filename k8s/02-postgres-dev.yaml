@@ -1,0 +1,37 @@
+# DEMO-ONLY single instance; the optional compose.task7-ha.yaml shows a replicated HA cluster.
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+  namespace: distributed-midterm
+spec:
+  selector: {app: postgres}
+  ports: [{port: 5432, targetPort: 5432}]
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: postgres
+  namespace: distributed-midterm
+spec:
+  serviceName: postgres
+  replicas: 1
+  selector: {matchLabels: {app: postgres}}
+  template:
+    metadata: {labels: {app: postgres}}
+    spec:
+      containers:
+        - name: db
+          image: postgres:16-alpine
+          envFrom: [{secretRef: {name: midterm-credentials}}]
+          ports: [{containerPort: 5432}]
+          readinessProbe:
+            exec: {command: [sh, -c, 'pg_isready -U storage -d distributed_storage']}
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          volumeMounts: [{name: pgdata, mountPath: /var/lib/postgresql/data}]
+  volumeClaimTemplates:
+    - metadata: {name: pgdata}
+      spec:
+        accessModes: [ReadWriteOnce]
+        resources: {requests: {storage: 2Gi}}

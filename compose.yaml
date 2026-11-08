@@ -130,6 +130,7 @@ services:
       DATABASE_URL: postgresql://storage:storagepass@db:5432/distributed_storage
       GATEWAY_API_KEY: ${GATEWAY_API_KEY:-change-me-local-api-key}
       RATE_LIMIT_PER_MINUTE: ${RATE_LIMIT_PER_MINUTE:-120}
+      ELASTICSEARCH_URL: http://elasticsearch:9200
     ports:
       - "127.0.0.1:18200:8000"
     depends_on:
@@ -139,7 +140,53 @@ services:
         condition: service_started
     restart: unless-stopped
 
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.15.0
+    environment:
+      discovery.type: single-node
+      xpack.security.enabled: "false"
+      ES_JAVA_OPTS: "-Xms512m -Xmx512m"
+      xpack.ml.enabled: "false"
+    ports:
+      - "127.0.0.1:19200:9200"
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:9200/_cluster/health >/dev/null"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+    restart: unless-stopped
+
+  search-indexer:
+    build:
+      context: .
+      dockerfile: gateway/indexer.Dockerfile
+    environment:
+      DATABASE_URL: postgresql://storage:storagepass@db:5432/distributed_storage
+      ELASTICSEARCH_URL: http://elasticsearch:9200
+      SEARCH_SYNC_INTERVAL: "15"
+    depends_on:
+      db:
+        condition: service_healthy
+      gateway:
+        condition: service_started
+      elasticsearch:
+        condition: service_healthy
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "127.0.0.1:18300:80"
+    depends_on:
+      - gateway
+    restart: unless-stopped
+
 volumes:
+  elasticsearch_data:
   postgres_data:
   node1_data:
   node2_data:

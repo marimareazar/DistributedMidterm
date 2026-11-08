@@ -89,3 +89,7 @@ app.include_router(object_router)
 
 from metadata_service.redundancy import router as task4_router
 app.include_router(task4_router)
+
+
+from metadata_service.task7 import router as bonus_router
+app.include_router(bonus_router)

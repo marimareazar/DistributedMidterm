@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: repair-worker
+  namespace: distributed-midterm
+spec:
+  replicas: 1
+  selector: {matchLabels: {app: repair-worker}}
+  template:
+    metadata: {labels: {app: repair-worker}}
+    spec:
+      containers:
+        - name: repair-worker
+          image: distributedmidterm-repair-worker:task7
+          imagePullPolicy: IfNotPresent
+          env:
+            - {name: METADATA_URL, value: 'http://metadata:8000'}
+            - name: WORKER_TOKEN
+              valueFrom: {secretKeyRef: {name: midterm-credentials, key: WORKER_TOKEN}}
+            - {name: REPAIR_INTERVAL, value: '20'}

@@ -8,7 +8,7 @@ from typing import Annotated
 
 import asyncio
 import httpx
-from fastapi import FastAPI, HTTPException, Path as ApiPath, Request, Response
+from fastapi import FastAPI, HTTPException, Header, Path as ApiPath, Request, Response
 from fastapi.responses import StreamingResponse
 
 NODE_ID = os.getenv("NODE_ID", "node-1")
@@ -128,3 +128,15 @@ def delete_chunk(sha256: Annotated[str, ApiPath(pattern=r"^[a-f0-9]{64}$")]):
         raise HTTPException(status_code=404, detail="Chunk not found")
     path.unlink()
     return {"node_id": NODE_ID, "hash": sha256, "deleted": True}
+
+
+@app.get('/internal/chunks')
+def inventory(x_worker_token: str | None = Header(None)):
+    # Used only by authenticated background GC, not the public gateway.
+    if x_worker_token != os.getenv('WORKER_TOKEN','local-development-worker-token'):
+        raise HTTPException(403,'Worker token required')
+    rows=[]
+    for p in STORAGE_DIR.glob('[0-9a-f][0-9a-f]/*'):
+        if p.is_file() and len(p.name)==64 and all(c in '0123456789abcdef' for c in p.name):
+            rows.append({'sha256':p.name,'size':p.stat().st_size,'mtime':p.stat().st_mtime})
+    return {'node_id':NODE_ID,'chunks':rows}

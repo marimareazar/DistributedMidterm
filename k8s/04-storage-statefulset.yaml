@@ -1,0 +1,52 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: storage
+  namespace: distributed-midterm
+spec:
+  clusterIP: None
+  selector: {app: storage}
+  ports: [{name: http, port: 8000, targetPort: 8000}]
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: storage
+  namespace: distributed-midterm
+spec:
+  serviceName: storage
+  replicas: 6
+  podManagementPolicy: Parallel
+  selector: {matchLabels: {app: storage}}
+  template:
+    metadata: {labels: {app: storage}}
+    spec:
+      containers:
+        - name: node
+          image: distributedmidterm-storage-node:task7
+          imagePullPolicy: IfNotPresent
+          command: [sh, -c]
+          args:
+            - |
+              ordinal=${HOSTNAME##*-}
+              export NODE_ID="node-$((ordinal+1))"
+              exec uvicorn main:app --host 0.0.0.0 --port 8000
+          env:
+            - {name: METADATA_URL, value: 'http://metadata:8000'}
+            - {name: STORAGE_DIR, value: /data}
+            - {name: HEARTBEAT_INTERVAL, value: '5'}
+          ports: [{containerPort: 8000}]
+          readinessProbe:
+            httpGet: {path: /health, port: 8000}
+            periodSeconds: 5
+            failureThreshold: 5
+          livenessProbe:
+            httpGet: {path: /health, port: 8000}
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          volumeMounts: [{name: data, mountPath: /data}]
+  volumeClaimTemplates:
+    - metadata: {name: data}
+      spec:
+        accessModes: [ReadWriteOnce]
+        resources: {requests: {storage: 2Gi}}

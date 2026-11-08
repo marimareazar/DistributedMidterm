@@ -1,0 +1,106 @@
+{
+  "request_count": 20,
+  "successful": 20,
+  "requests": [
+    {
+      "attempt": 1,
+      "status": 200,
+      "lb_header": "task7-nginx"
+    },
+    {
+      "attempt": 2,
+      "status": 200,
+      "lb_header": "task7-nginx"
+    },
+    {
+      "attempt": 3,
+      "status": 200,
+      "lb_header": "task7-nginx"
+    },
+    {
+      "attempt": 4,
+      "status": 200,
+      "lb_header": "task7-nginx"
+    },
+    {
+      "attempt": 5,
+      "status": 200,
+      "lb_header": "task7-nginx"
+    },
+    {
+      "attempt": 6,
+      "status": 200,
+      "lb_header": "task7-nginx"
+    },
+    {
+      "attempt": 7,
+      "status": 200,
+      "lb_header": "task7-nginx"
+    },
+    {
+      "attempt": 8,
+      "status": 200,
+      "lb_header": "task7-nginx"
+    },
+    {
+      "attempt": 9,
+      "status": 200,
+      "lb_header": "task7-nginx"
+    },
+    {
+      "attempt": 10,
+      "status": 200,
+      "lb_header": "task7-nginx"
+    },
+    {
+      "attempt": 11,
+      "status": 200,
+      "lb_header": "task7-nginx"
+    },
+    {
+      "attempt": 12,
+      "status": 200,
+      "lb_header": "task7-nginx"
+    },
+    {
+      "attempt": 13,
+      "status": 200,
+      "lb_header": "task7-nginx"
+    },
+    {
+      "attempt": 14,
+      "status": 200,
+      "lb_header": "task7-nginx"
+    },
+    {
+      "attempt": 15,
+      "status": 200,
+      "lb_header": "task7-nginx"
+    },
+    {
+      "attempt": 16,
+      "status": 200,
+      "lb_header": "task7-nginx"
+    },
+    {
+      "attempt": 17,
+      "status": 200,
+      "lb_header": "task7-nginx"
+    },
+    {
+      "attempt": 18,
+      "status": 200,
+      "lb_header": "task7-nginx"
+    },
+    {
+      "attempt": 19,
+      "status": 200,
+      "lb_header": "task7-nginx"
+    },
+    {
+      "attempt": 20,
+      "status": 200,
+      "lb_header": "task7-nginx"
+    }
+  ]
+}

@@ -1,0 +1,60 @@
+# ISOLATED HA POSTGRESQL DEMONSTRATION. Does NOT automatically migrate your existing db.
+# docker compose -f compose.task7-ha.yaml up -d --build
+name: distributedmidterm-ha
+services:
+  etcd1: &etcd
+    image: quay.io/coreos/etcd:v3.5.17
+    command: ['/usr/local/bin/etcd','--name','etcd1','--data-dir','/etcd-data','--listen-client-urls','http://0.0.0.0:2379','--advertise-client-urls','http://etcd1:2379','--listen-peer-urls','http://0.0.0.0:2380','--initial-advertise-peer-urls','http://etcd1:2380','--initial-cluster','etcd1=http://etcd1:2380,etcd2=http://etcd2:2380,etcd3=http://etcd3:2380','--initial-cluster-state','new','--initial-cluster-token','midterm-etcd']
+    volumes: ['etcd1_data:/etcd-data']
+    restart: unless-stopped
+  etcd2:
+    <<: *etcd
+    command: ['/usr/local/bin/etcd','--name','etcd2','--data-dir','/etcd-data','--listen-client-urls','http://0.0.0.0:2379','--advertise-client-urls','http://etcd2:2379','--listen-peer-urls','http://0.0.0.0:2380','--initial-advertise-peer-urls','http://etcd2:2380','--initial-cluster','etcd1=http://etcd1:2380,etcd2=http://etcd2:2380,etcd3=http://etcd3:2380','--initial-cluster-state','new','--initial-cluster-token','midterm-etcd']
+    volumes: ['etcd2_data:/etcd-data']
+  etcd3:
+    <<: *etcd
+    command: ['/usr/local/bin/etcd','--name','etcd3','--data-dir','/etcd-data','--listen-client-urls','http://0.0.0.0:2379','--advertise-client-urls','http://etcd3:2379','--listen-peer-urls','http://0.0.0.0:2380','--initial-advertise-peer-urls','http://etcd3:2380','--initial-cluster','etcd1=http://etcd1:2380,etcd2=http://etcd2:2380,etcd3=http://etcd3:2380','--initial-cluster-state','new','--initial-cluster-token','midterm-etcd']
+    volumes: ['etcd3_data:/etcd-data']
+  patroni1: &pg
+    build: {context: ., dockerfile: task7/ha/Dockerfile}
+    user: postgres
+    environment: &pgenv
+      PATRONI_SCOPE: midterm-ha
+      PATRONI_ETCD3_HOSTS: etcd1:2379,etcd2:2379,etcd3:2379
+      PATRONI_SUPERUSER_PASSWORD: ${HA_PG_PASSWORD:-midterm-ha-pass}
+      PATRONI_REPLICATION_PASSWORD: ${HA_REPL_PASSWORD:-midterm-repl-pass}
+      PATRONI_NAME: patroni1
+      PATRONI_POSTGRESQL_CONNECT_ADDRESS: patroni1:5432
+      PATRONI_RESTAPI_CONNECT_ADDRESS: patroni1:8008
+    volumes: ['patroni1_data:/var/lib/postgresql/data']
+    depends_on: [etcd1,etcd2,etcd3]
+    restart: unless-stopped
+  patroni2:
+    <<: *pg
+    environment:
+      <<: *pgenv
+      PATRONI_NAME: patroni2
+      PATRONI_POSTGRESQL_CONNECT_ADDRESS: patroni2:5432
+      PATRONI_RESTAPI_CONNECT_ADDRESS: patroni2:8008
+    volumes: ['patroni2_data:/var/lib/postgresql/data']
+  patroni3:
+    <<: *pg
+    environment:
+      <<: *pgenv
+      PATRONI_NAME: patroni3
+      PATRONI_POSTGRESQL_CONNECT_ADDRESS: patroni3:5432
+      PATRONI_RESTAPI_CONNECT_ADDRESS: patroni3:8008
+    volumes: ['patroni3_data:/var/lib/postgresql/data']
+  pg-ha-proxy:
+    image: haproxy:2.9-alpine
+    volumes: ['./task7/ha/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro']
+    ports: ['127.0.0.1:15434:5432','127.0.0.1:18408:8404']
+    depends_on: [patroni1,patroni2,patroni3]
+    restart: unless-stopped
+volumes:
+  etcd1_data:
+  etcd2_data:
+  etcd3_data:
+  patroni1_data:
+  patroni2_data:
+  patroni3_data:

@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: midterm-credentials
+  namespace: distributed-midterm
+type: Opaque
+stringData:
+  POSTGRES_DB: distributed_storage
+  POSTGRES_USER: storage
+  POSTGRES_PASSWORD: change-before-production
+  GATEWAY_API_KEY: change-before-production
+  WORKER_TOKEN: local-development-worker-token
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: midterm-config
+  namespace: distributed-midterm
+data:
+  DATABASE_URL: postgresql://storage:change-before-production@postgres:5432/distributed_storage
+  METADATA_URL: http://metadata:8000
+  STORAGE_NODES: node-1,node-2,node-3,node-4,node-5,node-6

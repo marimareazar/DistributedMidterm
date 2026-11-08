@@ -1,0 +1,71 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: node1
+  namespace: distributed-midterm
+spec:
+  selector:
+    statefulset.kubernetes.io/pod-name: storage-0
+  ports:
+    - port: 8000
+      targetPort: 8000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: node2
+  namespace: distributed-midterm
+spec:
+  selector:
+    statefulset.kubernetes.io/pod-name: storage-1
+  ports:
+    - port: 8000
+      targetPort: 8000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: node3
+  namespace: distributed-midterm
+spec:
+  selector:
+    statefulset.kubernetes.io/pod-name: storage-2
+  ports:
+    - port: 8000
+      targetPort: 8000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: node4
+  namespace: distributed-midterm
+spec:
+  selector:
+    statefulset.kubernetes.io/pod-name: storage-3
+  ports:
+    - port: 8000
+      targetPort: 8000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: node5
+  namespace: distributed-midterm
+spec:
+  selector:
+    statefulset.kubernetes.io/pod-name: storage-4
+  ports:
+    - port: 8000
+      targetPort: 8000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: node6
+  namespace: distributed-midterm
+spec:
+  selector:
+    statefulset.kubernetes.io/pod-name: storage-5
+  ports:
+    - port: 8000
+      targetPort: 8000
